@@ -1,10 +1,8 @@
-// src/app/menu/page.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import MenuSwiper from '@/components/animations/MenuSwiper';
 import { useCart } from '@/context/CartContext';
-// NEW import:
 import { formatRupiah } from '@/lib/formatRupiah';
 
 export default function MenuPage() {
@@ -12,7 +10,9 @@ export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // activeCategory of null will display all menu items
   const [activeCategory, setActiveCategory] = useState(null);
+  const [viewMode, setViewMode] = useState('swipe'); // 'swipe' or 'grid'
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -56,10 +56,21 @@ export default function MenuPage() {
     fetchData();
   }, []);
 
-  // Filter menu items by active category
+  // Filter menu items by active category; if activeCategory is null, show all items
   const filteredMenuItems = activeCategory
     ? menuItems.filter(item => item.category._id === activeCategory)
     : menuItems;
+
+  // Map filtered items for the swipe view including ingredients
+  const swiperItems = filteredMenuItems.map(item => ({
+    id: item._id,
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    image: item.image || '/images/default-food.png',
+    category: item.category.name,
+    ingredients: item.ingredients,
+  }));
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -80,6 +91,16 @@ export default function MenuPage() {
           <>
             {/* Category Navigation */}
             <div className="flex flex-wrap justify-center mb-8">
+              <button
+                onClick={() => setActiveCategory(null)}
+                className={`px-4 py-2 m-1 rounded-full transition-colors ${
+                  activeCategory === null
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                }`}
+              >
+                All
+              </button>
               {categories.map(category => (
                 <button
                   key={category._id}
@@ -95,12 +116,45 @@ export default function MenuPage() {
               ))}
             </div>
 
-            {/* Menu Items Grid */}
+            {/* View Mode Toggle */}
+            <div className="flex justify-center mb-8">
+              <button
+                onClick={() => setViewMode('swipe')}
+                className={`px-4 py-2 m-1 rounded-full transition-colors ${
+                  viewMode === 'swipe'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                }`}
+              >
+                Swipe View
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-4 py-2 m-1 rounded-full transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                }`}
+              >
+                Grid View
+              </button>
+            </div>
+
             {filteredMenuItems.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-600">No menu items found in this category.</p>
               </div>
+            ) : viewMode === 'swipe' ? (
+              // Render the interactive swipe view
+              <MenuSwiper
+                items={swiperItems}
+                onAddToCart={(itemId) => {
+                  const item = menuItems.find(it => it._id === itemId);
+                  if (item) addToCart(item);
+                }}
+              />
             ) : (
+              // Render the grid view
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredMenuItems.map(item => (
                   <div
@@ -133,13 +187,18 @@ export default function MenuPage() {
                     <div className="p-4">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg font-bold">{item.name}</h3>
-                        {/* NEW usage: formatRupiah(item.price) */}
                         <span className="text-amber-600 font-bold">
                           Rp {formatRupiah(item.price)}
                         </span>
                       </div>
 
                       <p className="text-gray-600 text-sm mb-3">{item.description}</p>
+                      {item.ingredients && item.ingredients.length > 0 && (
+                        <div className="text-xs text-gray-500 mt-2">
+                          <span className="font-semibold">Ingredients:</span>{' '}
+                          {item.ingredients.join(', ')}
+                        </div>
+                      )}
 
                       <div className="flex flex-wrap gap-2 mb-3">
                         {item.isVegetarian && (
@@ -154,14 +213,6 @@ export default function MenuPage() {
                         )}
                       </div>
 
-                      {item.ingredients && item.ingredients.length > 0 && (
-                        <div className="text-xs text-gray-500 mt-2">
-                          <span className="font-semibold">Ingredients:</span>{' '}
-                          {item.ingredients.join(', ')}
-                        </div>
-                      )}
-
-                      {/* Add to Cart Button */}
                       <button
                         onClick={() => addToCart(item)}
                         disabled={!item.available}
@@ -181,7 +232,6 @@ export default function MenuPage() {
           </>
         )}
       </div>
-      {/* Push Footer to Bottom */}
       <div className="mt-auto py-10"></div>
     </div>
   );
