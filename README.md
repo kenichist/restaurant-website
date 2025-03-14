@@ -9,7 +9,7 @@
    ```
    npm run dev
    ```
-4. Open [http://localhost:3000] in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Build for Production
 
@@ -18,4 +18,5 @@ npm run build
 ```
 
 ## Deployment
-The website can be deployed to Vercel or Netlify for the frontend.
+[Website](https://restaurant-website-xbdl.onrender.com/) is hosted in Render. Please be patient as the Render's hosting is slow, so entering the website for the first time might result in Error 502.
+
