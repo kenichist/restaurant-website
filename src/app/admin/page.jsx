@@ -285,6 +285,9 @@ export default function AdminPage() {
           )}
         </>
       )}
+
+      {/* Added empty space to push the footer down */}
+      <div className="h-[700px]"></div>
     </div>
   );
 }

@@ -10,7 +10,6 @@ export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // activeCategory of null will display all menu items
   const [activeCategory, setActiveCategory] = useState(null);
   const [viewMode, setViewMode] = useState('swipe'); // 'swipe' or 'grid'
   const { addToCart } = useCart();
@@ -70,7 +69,12 @@ export default function MenuPage() {
     image: item.image || '/images/default-food.png',
     category: item.category.name,
     ingredients: item.ingredients,
+    isPopular: item.isPopular,
+    isVegetarian: item.isVegetarian,
+    isSpicy: item.isSpicy,
+    available: item.available,
   }));
+
 
   return (
     <div className="min-h-screen flex flex-col">
