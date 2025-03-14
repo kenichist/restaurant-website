@@ -20,3 +20,5 @@ npm run build
 ## Deployment
 [Website](https://restaurant-website-xbdl.onrender.com/) is hosted in Render. Please be patient as the Render's hosting is slow, so entering the website for the first time might result in Error 502.
 
+## Notice
+I accidentally used my other account "scykt4". That is me committing. 
