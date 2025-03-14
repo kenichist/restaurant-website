@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 251, 235;
+  --background-end-rgb: 255, 237, 213;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+/* Animation classes for menu swiper */
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-from-right {
+  animation: slideFromRight 0.5s ease-out forwards;
+}
+
+.animate-slide-from-left {
+  animation: slideFromLeft 0.5s ease-out forwards;
+}
+
+/* Transition utility classes */
+.transition-all {
+  transition-property: all;
+}
+
+.duration-400 {
+  transition-duration: 400ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
+.duration-600 {
+  transition-duration: 600ms;
+}
+
+.duration-800 {
+  transition-duration: 800ms;
+}
+
+.delay-200 {
+  transition-delay: 200ms;
+}
+
+.delay-400 {
+  transition-delay: 400ms;
+}
+
+.delay-600 {
+  transition-delay: 600ms;
+}
+
+.delay-800 {
+  transition-delay: 800ms;
+}
+
+.delay-1000 {
+  transition-delay: 1000ms;
+}
+
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
