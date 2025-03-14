@@ -165,7 +165,7 @@ export default function NewMenuItemPage() {
 
         <div className="mb-4">
           <label htmlFor="price" className="block text-gray-700 text-sm font-bold mb-2">
-            Price ($) *
+            Price (Rp) *
           </label>
           <input
             type="number"

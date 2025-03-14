@@ -1,8 +1,11 @@
+// src/app/menu/page.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '@/context/CartContext';
+// NEW import:
+import { formatRupiah } from '@/lib/formatRupiah';
 
 export default function MenuPage() {
   const [categories, setCategories] = useState([]);
@@ -16,31 +19,31 @@ export default function MenuPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch categories
         const categoriesRes = await fetch('/api/categories');
         const categoriesData = await categoriesRes.json();
-        
+
         if (!categoriesData.success) {
           throw new Error(categoriesData.message || 'Failed to fetch categories');
         }
-        
+
         const sortedCategories = categoriesData.data.sort((a, b) => a.order - b.order);
         setCategories(sortedCategories);
-        
+
         // Set active category to first one if available
         if (sortedCategories.length > 0) {
           setActiveCategory(sortedCategories[0]._id);
         }
-        
+
         // Fetch all menu items
         const menuItemsRes = await fetch('/api/menu-items');
         const menuItemsData = await menuItemsRes.json();
-        
+
         if (!menuItemsData.success) {
           throw new Error(menuItemsData.message || 'Failed to fetch menu items');
         }
-        
+
         setMenuItems(menuItemsData.data);
       } catch (err) {
         setError(err.message);
@@ -49,7 +52,7 @@ export default function MenuPage() {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -62,13 +65,13 @@ export default function MenuPage() {
     <div className="min-h-screen flex flex-col">
       <div className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-3xl font-bold text-center mb-8">Our Menu</h1>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             Error: {error}
           </div>
         )}
-        
+
         {loading ? (
           <div className="text-center py-8">
             <p className="text-gray-600">Loading menu...</p>
@@ -91,7 +94,7 @@ export default function MenuPage() {
                 </button>
               ))}
             </div>
-            
+
             {/* Menu Items Grid */}
             {filteredMenuItems.length === 0 ? (
               <div className="text-center py-8">
@@ -100,7 +103,10 @@ export default function MenuPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredMenuItems.map(item => (
-                  <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div
+                    key={item._id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden"
+                  >
                     <div className="h-48 bg-gray-200 relative">
                       <img
                         src={item.image || '/images/default-food.png'}
@@ -112,7 +118,9 @@ export default function MenuPage() {
                       />
                       {!item.available && (
                         <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">Currently Unavailable</span>
+                          <span className="text-white font-bold text-lg">
+                            Currently Unavailable
+                          </span>
                         </div>
                       )}
                       {item.isPopular && (
@@ -121,15 +129,18 @@ export default function MenuPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="p-4">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg font-bold">{item.name}</h3>
-                        <span className="text-amber-600 font-bold">Rp {item.price.toFixed(3)}</span>
+                        {/* NEW usage: formatRupiah(item.price) */}
+                        <span className="text-amber-600 font-bold">
+                          Rp {formatRupiah(item.price)}
+                        </span>
                       </div>
-                      
+
                       <p className="text-gray-600 text-sm mb-3">{item.description}</p>
-                      
+
                       <div className="flex flex-wrap gap-2 mb-3">
                         {item.isVegetarian && (
                           <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
@@ -142,15 +153,16 @@ export default function MenuPage() {
                           </span>
                         )}
                       </div>
-                      
+
                       {item.ingredients && item.ingredients.length > 0 && (
                         <div className="text-xs text-gray-500 mt-2">
-                          <span className="font-semibold">Ingredients:</span> {item.ingredients.join(', ')}
+                          <span className="font-semibold">Ingredients:</span>{' '}
+                          {item.ingredients.join(', ')}
                         </div>
                       )}
 
                       {/* Add to Cart Button */}
-                      <button 
+                      <button
                         onClick={() => addToCart(item)}
                         disabled={!item.available}
                         className={`mt-4 w-full py-2 font-bold rounded-lg transition-colors ${

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { formatRupiah } from '@/lib/formatRupiah';
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('categories');
@@ -249,7 +250,7 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">
-                            ${item.price.toFixed(2)}
+                            Rp {formatRupiah(item.price)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
