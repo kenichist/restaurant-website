@@ -1,0 +1,7 @@
+.env.local           # Environment variables
+*.log                # Log files
+.DS_Store            # macOS system file
+.vscode/             # VSCode settings
+.idea/               # WebStorm/JetBrains settings
+node_modules/
+.next/
